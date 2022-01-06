@@ -1,24 +1,22 @@
 package com.example.splashscreencompatexam
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class MainViewModel @Inject constructor() : ViewModel() {
 
-    private var isLoading: Boolean = true
+    private val _isLoading = MutableLiveData(true)
+    val isLoading: LiveData<Boolean> get() = _isLoading
 
-    fun isInitializationComplete(): Boolean {
-        longTime()
-        return isLoading
-    }
-
-    private fun longTime() {
-        for (i in 1..100_000_000) {
-            // 오래 걸리는 작업
-            println()
-        }
-        isLoading = false
+    fun longTime() = viewModelScope.launch {
+        delay(10_000)
+        _isLoading.value = false
     }
 }

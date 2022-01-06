@@ -13,15 +13,22 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
 
     private val viewModel by viewModels<MainViewModel>()
+    private var isLoading: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         installSplashScreen()
             .setKeepVisibleCondition {
-                viewModel.isInitializationComplete()
+                isLoading
             }
 
         setContentView(R.layout.activity_main)
+
+        viewModel.longTime()
+
+        viewModel.isLoading.observe(this) {
+            isLoading = it
+        }
     }
 }
